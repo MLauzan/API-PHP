@@ -1,37 +1,45 @@
 <?php
 
-use App\Http\Controllers\controladorCarrito;
-use App\Http\Controllers\controladorCategorias;
-use App\Http\Controllers\controladorMetodosPago;
-use App\Http\Controllers\controladorOrdenCompra;
-use App\Http\Controllers\controladorProductos;
-use App\Http\Controllers\controladorUsuarios;
+use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\CategoriasController;
+use App\Http\Controllers\MetodosPagoController;
+use App\Http\Controllers\OrdenController;
+use App\Http\Controllers\ProductosController;
+use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\PedidoController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PruebaController;
+use App\Http\Controllers\StockController;
 use Illuminate\Http\Request;
 
-Route::get('carrito', [controladorCarrito::class, 'obtener']);
-Route::get('carrito/productos', [controladorCarrito::class, 'listar']);
-Route::post('carrito', [controladorCarrito::class, 'crear']);
-Route::put('carrito', [controladorCarrito::class, 'editar']);
-Route::delete('carrito', [controladorCarrito::class, 'limpiar']);
+Route::get('carrito/{id}', [CarritoController::class, 'obtener']);
+Route::post('carrito', [CarritoController::class, 'crear']);
+Route::put('carrito', [CarritoController::class, 'editar']);
+Route::delete('carrito', [CarritoController::class, 'limpiar']);
 
-Route::get('categorias/{id}', [controladorCategorias::class, 'obtener']);
-Route::post('categorias', [controladorCategorias::class, 'crear']);
-Route::put('categorias', [controladorCategorias::class, 'editar']);
 
-Route::post('metodoPago', [controladorMetodosPago::class, 'crear']);
-Route::put('metodoPago', [controladorMetodosPago::class, 'editar']);
+Route::get('categoria/{id}', [CategoriasController::class, 'obtener']);
+Route::post('categoria', [CategoriasController::class, 'crear']);
+Route::put('categoria', [CategoriasController::class, 'editar']);
 
-Route::post('orden', [controladorOrdenCompra::class, 'crear']);
+Route::get('metodosPago', [MetodosPagoController::class, 'obtener']);
+Route::post('metodoPago', [MetodosPagoController::class, 'crear']);
+Route::put('metodoPago', [MetodosPagoController::class, 'editar']);
 
-Route::post('registrarse', [controladorUsuarios::class, 'crear']);
-Route::get('usuario', [controladorUsuarios::class, 'obtener']);
-Route::put('usuario', [controladorUsuarios::class, 'editar']);
+Route::get('pedido/{id}', [PedidoController::class, 'obtener']);
 
-Route::get('productos', [controladorProductos::class, 'listar']);
-Route::get('producto/{id}', [controladorProductos::class, 'obtener']);
-Route::get('cantidad/{id}', [controladorProductos::class, 'verCantidad']);
-Route::post('producto', [controladorProductos::class, 'crear']);
-Route::put('producto', [controladorProductos::class, 'editar']);
-Route::delete('producto', [controladorProductos::class, 'eliminar']);
+
+Route::get('orden/{id}', [OrdenController::class, 'obtener']);
+Route::post('orden', [OrdenController::class, 'crear']);
+
+Route::get('usuario/{id}', [UsuariosController::class, 'obtener']);
+Route::post('usuario', [UsuariosController::class, 'crear']);
+Route::put('usuario', [UsuariosController::class, 'editar']);
+
+Route::get('stock/{id}', [StockController::class, 'obtener']);
+Route::post('stock', [StockController::class, 'actualizar']);
+
+Route::get('productos', [ProductosController::class, 'listar']);
+Route::get('producto/{id}', [ProductosController::class, 'obtener']);
+Route::post('producto', [ProductosController::class, 'crear']);
+Route::put('producto', [ProductosController::class, 'editar']);
+Route::delete('producto', [ProductosController::class, 'eliminar']);

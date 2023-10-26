@@ -3,10 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 
-class controladorCategorias extends Controller
+class CategoriasController extends Controller
 {
+    public function obtener(Request $req, $id)
+    {
+        $categorias = Categoria::with('productos')->find($id);
+        return response()->json(['categorias' => $categorias]);
+    }
     public function crear(Request $req)
     {
         echo "Creando categoría";
@@ -14,9 +20,5 @@ class controladorCategorias extends Controller
     public function editar(Request $req)
     {
         echo "Actualizando producto";
-    }
-    public function obtener(Request $req)
-    {
-        echo "Obteniendo productos dentro de la categoría";
     }
 }
