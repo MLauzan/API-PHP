@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id()->unique();
-            $table->unsignedBigInteger('producto_id');
+            $table->unsignedBigInteger('producto_id')->unique();
             $table->unsignedBigInteger("cantidad");
 
             $table->foreign("producto_id")->references('id')->on('productos');

@@ -21,22 +21,23 @@ Route::get('categoria/{id}', [CategoriasController::class, 'obtener']);
 Route::post('categoria', [CategoriasController::class, 'crear']);
 Route::put('categoria', [CategoriasController::class, 'editar']);
 
-Route::get('metodosPago', [MetodosPagoController::class, 'obtener']);
-Route::post('metodoPago', [MetodosPagoController::class, 'crear']);
-Route::put('metodoPago', [MetodosPagoController::class, 'editar']);
+Route::get('metodospago', [MetodosPagoController::class, 'obtener']);
+Route::post('metodospago', [MetodosPagoController::class, 'crear']);
+Route::put('metodospago', [MetodosPagoController::class, 'editar']);
 
 Route::get('pedido/{id}', [PedidoController::class, 'obtener']);
+Route::post('pedido', [PedidoController::class, 'crear']);
 
 
 Route::get('orden/{id}', [OrdenController::class, 'obtener']);
 Route::post('orden', [OrdenController::class, 'crear']);
 
 Route::get('usuario/{id}', [UsuariosController::class, 'obtener']);
-Route::post('usuario', [UsuariosController::class, 'crear']);
+Route::post('usuario', [UsuariosController::class, 'login']);
 Route::put('usuario', [UsuariosController::class, 'editar']);
 
 Route::get('stock/{id}', [StockController::class, 'obtener']);
-Route::post('stock', [StockController::class, 'actualizar']);
+Route::post('stock', [StockController::class, 'crear']);
 
 Route::get('productos', [ProductosController::class, 'listar']);
 Route::get('producto/{id}', [ProductosController::class, 'obtener']);

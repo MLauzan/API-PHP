@@ -17,10 +17,9 @@ class StockFactory extends Factory
      */
     public function definition()
     {
-        $productos = Producto::all()->pluck('id')->toArray();
 
         return [
-            'producto_id' => $this->faker->randomElement($productos),
+            'producto_id' => $this->faker->unique->randomDigitNotNull,
             'cantidad' => $this->faker->randomDigitNotNull,
         ];
     }

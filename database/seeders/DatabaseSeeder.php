@@ -24,11 +24,10 @@ class DatabaseSeeder extends Seeder
         Categoria::factory()->count(5)->create();
         MetodosPago::factory()->count(2)->create();
         Usuario::factory()->count(10)->create();
-
-        Producto::factory()->count(5)->create();
+        Producto::factory()->count(10)->create();
         Carrito::factory()->count(10)->create();
-        Stock::factory()->count(5)->create();
         Pedido::factory()->count(5)->create();
         Orden::factory()->count(7)->create();
+        Stock::factory()->count(9)->create();
     }
 }
