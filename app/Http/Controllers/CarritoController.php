@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Carrito;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class CarritoController extends Controller
@@ -13,12 +14,11 @@ class CarritoController extends Controller
     {
         try {
             $req->validate([
-                'usuario_id' => 'required|numeric|exists:usuarios,id|unique:carritos,usuario_id',
                 'importe' => 'required|numeric|gt:0',
             ]);
 
             $carrito = new Carrito();
-            $carrito->usuario_id = $req->usuario_id;
+            $carrito->usuario_id =  Auth::user()->id;
             $carrito->importe = $req->importe;
 
             $carrito->save();
