@@ -10,12 +10,13 @@ class Carrito extends Model
     use HasFactory;
     public $timestamps = false;
     protected $fillable = ['usuario_id', 'importe', 'finalizado'];
-
+    protected $hidden = ['finalizado', 'usuario_id'];
+    
     public function pedidos()
     {
         return $this->hasMany(Pedido::class);
     }
-
+    
     public function usuario()
     {
         return $this->belongsTo(Usuario::class, 'usuario_id');

@@ -11,7 +11,7 @@ class Pedido extends Model
 
     public $timestamps = false;
     protected $fillable = ['carrito_id', 'producto_id', 'cantidad', 'importe'];
-
+    protected $hidden = ['carrito_id', 'producto_id'];
     public function productos()
     {
         return $this->belongsTo(Producto::class, 'producto_id');

@@ -23,10 +23,12 @@ class UsuariosController extends Controller
                 'email' => 'required|exists:usuarios,email',
                 'password' => 'required'
             ]);
-            if (Auth::attempt($credenciales, true)) {
+
+            if (Auth::attempt($credenciales)) {
                 $usuario = Usuario::find(Auth::user()->id);
                 $token = $usuario->createToken('token')->accessToken;
-                return response()->json(['token'  => $token, 'usuario' => $usuario]);
+
+                return response()->json(['usuario' => $usuario, 'token' => $token]);
             }
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->all();
@@ -53,7 +55,7 @@ class UsuariosController extends Controller
 
             $usuario->save();
             $token = $usuario->createToken('token')->accessToken;
-            return response()->json(['token' => $token, 'usuario' => $usuario]);
+            return response()->json(['usuario' => $usuario, 'token' => $token]);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->all();
             return response()->json(['errores' => $errors], 422);

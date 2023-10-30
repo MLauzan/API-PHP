@@ -16,7 +16,7 @@ class Orden extends Model
     public $timestamps = false;
     protected $fillable = ['carrito_id', 'metodo_pago_id'];
     protected $table = 'ordenes';
-
+    protected $hidden = ['carrito_id', 'metodo_pago_id'];
 
     public function carrito()
     {

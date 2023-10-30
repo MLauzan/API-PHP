@@ -9,16 +9,19 @@ use Illuminate\Validation\ValidationException;
 
 class ProductosController extends Controller
 {
-    public function listar(Request $req)
+    public function listar()
     {
         $productos = Producto::with('categorias')->get();
         return response()->json(['productos' => $productos]);
     }
-    public function obtener($id)
+    public function obtener()
     {
-        $producto = Producto::with('categorias')->find($id);
-        return response()->json(['producto' => $producto]);
+        $nombre = request('nombre');
+        $productos = Producto::with('categorias')->where('nombre', 'like', "%$nombre%")->get(); 
+
+        return response()->json(['productos' => $productos]);
     }
+
     public function crear(Request $req)
     {
         try {
@@ -37,7 +40,7 @@ class ProductosController extends Controller
             $producto->descripcion = $req->descripcion;
             $producto->categoria_id = $req->categoria_id;
             $producto->save();
-            
+
             return response()->json(['producto' => $producto]);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->all();

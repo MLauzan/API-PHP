@@ -32,4 +32,7 @@ class StockController extends Controller
             return response()->json(['errores' => $errors], 422);
         }
     }
+    public function editar() {
+
+    }
 }
