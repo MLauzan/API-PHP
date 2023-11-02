@@ -15,7 +15,12 @@ class PedidoController extends Controller
     {
         $idCarritoUsuario = Carrito::where('usuario_id', Auth::user()->id)->value('id');
         $pedidos = Pedido::with('productos.categorias', 'carrito.usuario')->where('carrito_id', $idCarritoUsuario)->first();
-
+        $pedidos = Pedido::where('carrito_id', $idCarritoUsuario)->get();
+        $importeTotal = 0;
+        foreach ($pedidos as $pedido) {
+            $importeTotal += $pedido->importe;
+        }
+        $pedidos->importe = $importeTotal;
         return response()->json(['pedidos' => $pedidos]);
     }
     public function crear(Request $req)
@@ -29,7 +34,6 @@ class PedidoController extends Controller
             if (!$carritoUsuario) {
                 $carritoUsuario = new Carrito();
                 $carritoUsuario->usuario_id = Auth::user()->id;
-                $carritoUsuario->importe = 0;
                 $carritoUsuario->save();
             }
 
@@ -52,9 +56,12 @@ class PedidoController extends Controller
             } else {
                 $pedido->save();
             }
-            $carritoUsuario->importe = $carritoUsuario->importe + $pedido->importe;
-            $carritoUsuario->save();
-
+            $pedidos =  Pedido::where('carrito_id', $carritoUsuario->id)->get();
+            $importeTotal = 0;
+            foreach ($pedidos as $pedido) {
+                $importeTotal += $pedido->importe;
+            }
+            $pedido->importeTotal = $importeTotal;
             $pedido->load('carrito.usuario', 'productos.categorias');
             return response()->json(['pedido' => $pedido]);
         } catch (ValidationException $e) {
@@ -62,7 +69,24 @@ class PedidoController extends Controller
             return response()->json(['errores' => $errors], 422);
         }
     }
-    public function eliminar()
+    public function eliminar($id)
     {
+        try {
+            $carritoUsuario = Carrito::where('usuario_id', Auth::user()->id)->first();
+            if (!$carritoUsuario->id) {
+                return response()->json(['errores' => 'Carrito no encontrado'], 404);
+            } else {
+                $pedido = Pedido::where('carrito_id', $carritoUsuario->id)->where('id', $id)->first();
+                if ($pedido) {
+                    $carritoUsuario->save();
+                    $pedido->delete();
+                    return response()->json(['mensaje' => 'Pedido borrado con éxito'], 200);
+                } else {
+                    return response()->json(['errores' => 'Pedido no encontado'], 404);
+                }
+            }
+        } catch (\Throwable $e) {
+            return response()->json(['errores' => $e->getMessage()], 500);
+        }
     }
 }

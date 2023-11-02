@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pedido;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -17,7 +18,7 @@ class ProductosController extends Controller
     public function obtener()
     {
         $nombre = request('nombre');
-        $productos = Producto::with('categorias')->where('nombre', 'like', "%$nombre%")->get(); 
+        $productos = Producto::with('categorias')->where('nombre', 'like', "%$nombre%")->get();
 
         return response()->json(['productos' => $productos]);
     }
@@ -47,12 +48,44 @@ class ProductosController extends Controller
             return response()->json(['errores' => $errors], 422);
         }
     }
-    public function editar(Request $req)
+    public function editar(Request $req, $id)
     {
-        echo "Actualizando producto";
+        try {
+            $producto = Producto::find($id);
+
+            if (!$producto) {
+                return response()->json(['errores' => 'Producto no encontrado'], 404);
+            }
+            $req->validate([
+                'nombre' => 'nullable|string|max:255',
+                'precio' => 'nullable|numeric',
+                'imagen' => 'nullable|url:http,https',
+                'descripcion' => 'nullable|string|max:255',
+                'categoria_id' => 'nullable|exists:categorias,id'
+            ]);
+            $producto->fill($req->only([
+                'nombre', 'precio', 'imagen', 'descripcion', 'categoria_id'
+            ]));
+            $producto->save();
+            $pedidos =  Pedido::where('producto_id', $id)->get();
+            foreach ($pedidos as $pedido) {
+                $pedido->update(["importe" => $producto->precio]);
+            }
+            return response()->json(['producto' => $producto], 201);
+        } catch (ValidationException $e) {
+            $errors = $e->validator->errors()->all();
+            return response()->json(['errores' => $errors], 422);
+        }
     }
-    public function eliminar(Request $req)
+    public function eliminar(Request $req, $id)
     {
-        echo "Eliminando el producto";
+        $producto = Producto::find($id);
+
+        if (!$producto || $producto->habilitado === 0) {
+            return response()->json(['errores' => 'El producto no fue encontrado o ya fue borrado'], 404);
+        } else {
+            $producto->update(['habilitado' => false]);
+            return response()->json(['mensaje' => 'Producto borrado con éxito'], 200);
+        }
     }
 }

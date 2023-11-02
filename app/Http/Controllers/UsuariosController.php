@@ -27,8 +27,9 @@ class UsuariosController extends Controller
             if (Auth::attempt($credenciales)) {
                 $usuario = Usuario::find(Auth::user()->id);
                 $token = $usuario->createToken('token')->accessToken;
-
                 return response()->json(['usuario' => $usuario, 'token' => $token]);
+            } else {
+                return response()->json(['errores' => "credenciales inválidas"]);
             }
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->all();
@@ -55,7 +56,7 @@ class UsuariosController extends Controller
 
             $usuario->save();
             $token = $usuario->createToken('token')->accessToken;
-            return response()->json(['usuario' => $usuario, 'token' => $token]);
+            return response()->json(['usuario' => $usuario, 'token' => $token], 201);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->all();
             return response()->json(['errores' => $errors], 422);
@@ -71,6 +72,31 @@ class UsuariosController extends Controller
 
     public function editar(Request $req)
     {
-        echo "Editando usuario";
+        try {
+            $usuario = Usuario::find(Auth::user()->id);
+
+            if (!$usuario) {
+                return response()->json(['errores' => 'Usuario no encontrado'], 404);
+            }
+
+            $req->validate([
+                'nombre' => 'nullable|string|max:255',
+                'email' => 'nullable|string|email|max:255|unique:usuarios,email',
+                'password' => 'nullable|string|min:6',
+                'telefono' => 'nullable|string|max:30',
+                'domicilio' => 'nullable|string|max:255',
+            ]);
+            if ($req->password) {
+                $usuario->password = $req['password'] = Hash::make($req['password']);
+            }
+            $usuario->fill($req->only([
+                'nombre', 'email', 'password', 'telefono', 'domicilio'
+            ]));
+            $usuario->save();
+            return response()->json(['usuario' => $usuario], 201);
+        } catch (ValidationException $e) {
+            $errors = $e->validator->errors()->all();
+            return response()->json(['errores' => $errors], 422);
+        }
     }
 }

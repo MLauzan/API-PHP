@@ -9,7 +9,7 @@ class Carrito extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $fillable = ['usuario_id', 'importe', 'finalizado'];
+    protected $fillable = ['usuario_id', 'finalizado'];
     protected $hidden = ['finalizado', 'usuario_id'];
     
     public function pedidos()

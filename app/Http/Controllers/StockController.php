@@ -32,7 +32,25 @@ class StockController extends Controller
             return response()->json(['errores' => $errors], 422);
         }
     }
-    public function editar() {
+    public function editar(Request $req, $producto_id)
+    {
+        try {
+            $stock = Stock::where('producto_id', $producto_id)->first();
 
+            if (!$stock) {
+                return response()->json(['errores' => 'Producto no encontrado'], 404);
+            }
+            $req->validate([
+                'cantidad' => 'required|numeric|gt:0',
+            ]);
+            $stock->update([
+                'cantidad' => $req->cantidad
+            ]);
+            $stock->load('producto.categorias');
+            return response()->json(['stock' => $stock], 201);
+        } catch (ValidationException $e) {
+            $errors = $e->validator->errors()->all();
+            return response()->json(['errores' => $errors], 422);
+        }
     }
 }
