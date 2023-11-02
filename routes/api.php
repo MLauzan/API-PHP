@@ -12,9 +12,11 @@ use App\Http\Controllers\StockController;
 
 
 Route::prefix('v1')->middleware(['api'])->group(function () {
-
+    
     Route::middleware('auth:api')->group(function () {
-
+        
+        Route::get('logout', [UsuariosController::class, 'logout']);
+       
         Route::get('carrito', [CarritoController::class, 'obtener']);
 
         Route::post('categoria', [CategoriasController::class, 'crear']);
@@ -44,7 +46,6 @@ Route::prefix('v1')->middleware(['api'])->group(function () {
 
     Route::post('login', [UsuariosController::class, 'login']);
     Route::post('registrar', [UsuariosController::class, 'registrarse']);
-    Route::get('logout', [UsuariosController::class, 'logout']);
 
     Route::get('producto', [ProductosController::class, 'obtener']);
     Route::get('productos', [ProductosController::class, 'listar']);

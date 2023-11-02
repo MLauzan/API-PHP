@@ -67,7 +67,7 @@ class UsuariosController extends Controller
     {
         $token = $req->user()->token();
         $token->revoke();
-        return response()->noContent();
+        return response()->json(['mensaje' => "Sesión cerrada con éxito"]);
     }
 
     public function editar(Request $req)
